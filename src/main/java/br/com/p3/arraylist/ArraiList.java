@@ -2,22 +2,20 @@ package br.com.p3.arraylist;
 
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
-
 import br.com.p3.exceptions.ForaDeIndiceException;
 import br.com.p3.exceptions.TamanhoInvalidoException;
 import br.com.p3.exceptions.ValorNuloException;
 
 /**
  * Simula comportamento de um array
- * @author Matheus Costa
+ * @author Matheus Lima Tavares da Costa
  */
 public class ArraiList 
 {
 	private Object[] objetos;
 	private int posicao = 0;
 	private static final int TAMANHOPADRAO = 12;
-	
+
 	/**
 	 * Cria um array de tamanho padrão
 	 */
@@ -37,70 +35,154 @@ public class ArraiList
 			this.objetos = new Object[tamanho];
 		}
 	}
-	
+
 	/**
 	 * Função adciona objeto ao arrai
 	 * @param objeto Representa o objeto a ser adicionado na lista
 	 * @throws ValorNuloException é chamado toda vez que o objeto passado for nulo
 	 */
 	public void add(Object objeto){
+		verificaNulo(objeto);
 		if(isEstourou()) {
 			this.objetos = duplicaTamanho(objetos);
 		}
 		this.objetos[posicao] = objeto;
 		posicao++;
 	}
-	
+
+	public void add(int indice, Object objeto){
+		verificaNulo(objeto);
+		if(isEstourou()) {
+			this.objetos = duplicaTamanho(objetos);
+		}else {
+			this.objetos = aumentaUm(objetos);
+		}
+		insereNoIndice(indice, objeto);
+		posicao++;
+	}
+
+	private Object[] insereNoIndice(int indice, Object objeto) {
+		Object[] temp = clone();
+		temp[indice] = objeto;
+		for (int i = indice; i < objetos.length; i++) {
+			temp[indice + 1] = objetos[i];
+		}
+		return temp;
+	}
+
 	/**
 	 * Retorna elemento pelo indice
 	 * @param index representa a posição do elemento
 	 */
 	public Object get(int index){
-		if(index > objetos.length || index < 0) {
-			try {
-				throw new ForaDeIndiceException("Indice não encontrado.");
-			} catch (ForaDeIndiceException e) {
-				System.out.println(e.getMessage());
-			}
+		if(index >= posicao || index < 0) {
+			throw new ArrayIndexOutOfBoundsException();
 		}
 		return objetos[index];
 	}
-	
+
 	/**
 	 * Procura pela primeira ocorrencia do objeto no arrai e retorna o indice dele
 	 * @param objeto 
 	 * @return retorna o indice do objeto no arrai se ele não for encontrado retorna -1
 	 */
 	public int indexOf(Object objeto) {
-		int contIndice = 0;
-		for (Object object : objetos) {
-			if(objeto.equals(object)) {
-				return contIndice;
+		verificaNulo(objeto);
+		int contIndice = -1;
+		for (int i = 0; i < posicao; i++) {
+			if(objeto.equals(objetos[i])) {
+				contIndice = i;
 			}
-			contIndice++;
 		}
-		return -1;
+		return contIndice;
 	}
-	
+
 	/**
 	 * Procura pelo ultimo indice do objeto passado
 	 * @param objeto
 	 * @return Retorna o ultimo indice da ocorrencia do objeto, se não tiver ocorrencia retorna -1
 	 */
 	public int lastIndexOf(Object objeto) {
-		int contIndice = 0;
-		int ultimaOcorrencia = 0;
-		Boolean temOcorrencia = false;
-		for (Object object : objetos) {
-			if(objeto.equals(object)) {
-				ultimaOcorrencia = contIndice;
-				temOcorrencia = true;
+		verificaNulo(objeto);
+		int ultimaOcorrencia = -1;
+		for (int i = 0; i < posicao; i++) {
+			if(objeto.equals(objetos[i])) {
+				ultimaOcorrencia = i;
 			}
-			contIndice++;
 		}
-		return temOcorrencia ? ultimaOcorrencia : -1;
+		return ultimaOcorrencia;
+	}
+
+	@SuppressWarnings("unused")
+	public void clear() {
+		for (Object object : objetos) {
+			object = null;
+		}
+		this.posicao = 0;
+	}
+
+	/**
+	 * Remove objeto do arrai pelo indice
+	 * @param indice
+	 */
+	public void remove(int indice) {
+		if(indice > posicao) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		objetos[indice] = null;
+		for (int i = indice; i < posicao; i++) {
+			objetos[i] = objetos[i + 1];
+		}
+		posicao--;
 	}
 	
+	/**
+	 * Remove um objeto
+	 * @param object
+	 */
+	public void remove(Object objeto) {
+		verificaNulo(objeto);
+		Boolean achou = false;
+		for (int i = 0; i < posicao; i++) {
+			if(objetos[i].equals(objeto)) {
+				objetos[i] = null;
+				achou = true;
+				break;
+			}else if(!achou) {
+				throw new NullPointerException();
+			}
+		}
+		posicao --;
+		
+	}
+
+	/**
+	 * Metodo retorna uma copia da lista atual
+	 */
+	public Object[] clone() {
+		Object[] copia = new Object[objetos.length];
+		for (int i = 0; i < objetos.length; i++) {
+			copia[i] = this.objetos[i];
+		}
+		return copia;
+	}
+
+	/**
+	 * Esse metódo retorna o tamanho da lista de objetos
+	 * @return
+	 */
+	public int size() {
+		return posicao;
+	}
+
+	/**
+	 * Retorna se o array está vazio.
+	 * @return
+	 */
+	public boolean isEmpty() {
+		return posicao == 0;
+	}
+
 	/**
 	 * 
 	 * @return Retorna se o tamanho da lista é zero
@@ -114,12 +196,12 @@ public class ArraiList
 	 * @param objeto Representa o objeto a ser verificado
 	 * @throws ValorNuloException 
 	 */
-	public void verificaNulo(Object objeto) throws ValorNuloException {
+	public void verificaNulo(Object objeto) {
 		if(objeto == null) {
-			throw new ValorNuloException("Objeto passado não pode ser nulo!");
+			throw new NullPointerException();
 		}
 	}
-	
+
 	/**
 	 * Caso o arrai não tenha mais espaço essa função duplica o tamanho
 	 * @param objetos
@@ -134,10 +216,23 @@ public class ArraiList
 		return temp;
 	}
 
+	/**
+	 * Caso seja usado o add com indice
+	 * @param objetos
+	 * @return
+	 */
+	public Object[] aumentaUm(Object[] objetos) {
+		Object[] temp = new Object[objetos.length + 1];
+		for (int i = 0; i < objetos.length; i++) {
+			temp[i] = objetos[i];
+		}
+		return temp;
+	}
+
 	@Override
 	public String toString() {
 		return "ArraiList [objetos=" + Arrays.toString(objetos) + "]";
 	}
-	
-	
+
+
 }
