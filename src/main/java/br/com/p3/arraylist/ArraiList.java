@@ -1,8 +1,8 @@
 package br.com.p3.arraylist;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
-import br.com.p3.exceptions.ForaDeIndiceException;
 import br.com.p3.exceptions.TamanhoInvalidoException;
 import br.com.p3.exceptions.ValorNuloException;
 
@@ -135,7 +135,7 @@ public class ArraiList
 		}
 		posicao--;
 	}
-	
+
 	/**
 	 * Remove um objeto
 	 * @param object
@@ -153,7 +153,7 @@ public class ArraiList
 			}
 		}
 		posicao --;
-		
+
 	}
 
 	/**
@@ -227,6 +227,24 @@ public class ArraiList
 			temp[i] = objetos[i];
 		}
 		return temp;
+	}
+
+	/**
+	 * Metódo para saber se um objeto se encontra no arrai
+	 * @param objeto
+	 * @return
+	 */
+	public Boolean isContain(Object objeto) {
+		verificaNulo(objeto);
+		Boolean contem = false;
+		if(size() > 0) {
+			for (int i = 0; i < posicao; i++) {
+				if(objetos[i].equals(objeto)) {
+					contem = true;
+				}
+			}
+		}
+		return contem;
 	}
 
 	@Override
