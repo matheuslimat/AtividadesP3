@@ -19,6 +19,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="C:/DEV2/AtividadesP3/junit-jupiter-params-5.4.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

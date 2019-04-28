@@ -1,7 +1,7 @@
 package br.com.p3.arraylist;
 
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.List;
 
 import br.com.p3.exceptions.TamanhoInvalidoException;
 import br.com.p3.exceptions.ValorNuloException;
@@ -10,64 +10,47 @@ import br.com.p3.exceptions.ValorNuloException;
  * Simula comportamento de um array
  * @author Matheus Lima Tavares da Costa
  */
-public class ArraiList 
+public class ArrayList<T>
 {
-	private Object[] objetos;
+	private T[] objetos;
 	private int posicao = 0;
 	private static final int TAMANHOPADRAO = 12;
 
 	/**
 	 * Cria um array de tamanho padrão
 	 */
-	public ArraiList() {
-		this.objetos = new Object[TAMANHOPADRAO];
+	@SuppressWarnings("unchecked")
+	public ArrayList() {
+		this.objetos = (T[]) new Object[TAMANHOPADRAO];
 	}
 
 	/**
-	 * Construtor do arrai com tamanho passado
+	 * Construtor do array com tamanho passado
 	 * @param Especifica o tamanho do array
 	 * @throws TamanhoInvalidoException é chamado toda vez que o tamanho passado for inválido
 	 */
-	public ArraiList(int tamanho){
+	@SuppressWarnings("unchecked")
+	public ArrayList(int tamanho){
 		if (tamanho < 1){
-			throw new TamanhoInvalidoException("Tamanho Inválido");
+			throw new IllegalArgumentException();
 		}else{
-			this.objetos = new Object[tamanho];
+			//Como a instancia usada é de um Objeto qualquer não pode garantir o cast
+			this.objetos = (T[]) new Object[tamanho];
 		}
 	}
 
 	/**
-	 * Função adciona objeto ao arrai
+	 * Função adciona objeto ao array
 	 * @param objeto Representa o objeto a ser adicionado na lista
 	 * @throws ValorNuloException é chamado toda vez que o objeto passado for nulo
 	 */
-	public void add(Object objeto){
+	public void add(T objeto){
 		verificaNulo(objeto);
 		if(isEstourou()) {
-			this.objetos = duplicaTamanho(objetos);
+			duplicaTamanho();
 		}
 		this.objetos[posicao] = objeto;
 		posicao++;
-	}
-
-	public void add(int indice, Object objeto){
-		verificaNulo(objeto);
-		if(isEstourou()) {
-			this.objetos = duplicaTamanho(objetos);
-		}else {
-			this.objetos = aumentaUm(objetos);
-		}
-		insereNoIndice(indice, objeto);
-		posicao++;
-	}
-
-	private Object[] insereNoIndice(int indice, Object objeto) {
-		Object[] temp = clone();
-		temp[indice] = objeto;
-		for (int i = indice; i < objetos.length; i++) {
-			temp[indice + 1] = objetos[i];
-		}
-		return temp;
 	}
 
 	/**
@@ -82,11 +65,11 @@ public class ArraiList
 	}
 
 	/**
-	 * Procura pela primeira ocorrencia do objeto no arrai e retorna o indice dele
+	 * Procura pela primeira ocorrencia do objeto no array e retorna o indice dele
 	 * @param objeto 
-	 * @return retorna o indice do objeto no arrai se ele não for encontrado retorna -1
+	 * @return retorna o indice do objeto no array se ele não for encontrado retorna -1
 	 */
-	public int indexOf(Object objeto) {
+	public int indexOf(T objeto) {
 		verificaNulo(objeto);
 		int contIndice = -1;
 		for (int i = 0; i < posicao; i++) {
@@ -102,7 +85,7 @@ public class ArraiList
 	 * @param objeto
 	 * @return Retorna o ultimo indice da ocorrencia do objeto, se não tiver ocorrencia retorna -1
 	 */
-	public int lastIndexOf(Object objeto) {
+	public int lastIndexOf(T objeto) {
 		verificaNulo(objeto);
 		int ultimaOcorrencia = -1;
 		for (int i = 0; i < posicao; i++) {
@@ -115,14 +98,16 @@ public class ArraiList
 
 	@SuppressWarnings("unused")
 	public void clear() {
-		for (Object object : objetos) {
-			object = null;
+		if(posicao > 0) {
+			for (T object : objetos) {
+				object = null;
+			}
 		}
 		this.posicao = 0;
 	}
 
 	/**
-	 * Remove objeto do arrai pelo indice
+	 * Remove objeto do array pelo indice
 	 * @param indice
 	 */
 	public void remove(int indice) {
@@ -140,7 +125,7 @@ public class ArraiList
 	 * Remove um objeto
 	 * @param object
 	 */
-	public void remove(Object objeto) {
+	public void remove(T objeto) {
 		verificaNulo(objeto);
 		Boolean achou = false;
 		for (int i = 0; i < posicao; i++) {
@@ -159,8 +144,10 @@ public class ArraiList
 	/**
 	 * Metodo retorna uma copia da lista atual
 	 */
-	public Object[] clone() {
-		Object[] copia = new Object[objetos.length];
+	public T[] clone() {
+		//Como a instancia usada é de um Objeto qualquer não pode garantir o cast
+		@SuppressWarnings("unchecked")
+		T[] copia = (T[]) new Object[objetos.length];
 		for (int i = 0; i < objetos.length; i++) {
 			copia[i] = this.objetos[i];
 		}
@@ -196,24 +183,26 @@ public class ArraiList
 	 * @param objeto Representa o objeto a ser verificado
 	 * @throws ValorNuloException 
 	 */
-	public void verificaNulo(Object objeto) {
+	public void verificaNulo(T objeto) {
 		if(objeto == null) {
 			throw new NullPointerException();
 		}
 	}
 
 	/**
-	 * Caso o arrai não tenha mais espaço essa função duplica o tamanho
+	 * Caso o array não tenha mais espaço essa função duplica o tamanho
 	 * @param objetos
 	 * @return
 	 */
-	public Object[] duplicaTamanho(Object[] objetos) {
+	public void duplicaTamanho() {
 		int novoTamanho = objetos.length * 2;
-		Object[] temp = new Object[novoTamanho];
+		//Como a instancia usada é de um Objeto qualquer não pode garantir o cast
+		@SuppressWarnings("unchecked")
+		T[] temp = (T[]) new Object[novoTamanho];
 		for (int i = 0; i < objetos.length; i++) {
 			temp[i] = objetos[i];
 		}
-		return temp;
+		this.objetos = temp;
 	}
 
 	/**
@@ -221,8 +210,10 @@ public class ArraiList
 	 * @param objetos
 	 * @return
 	 */
-	public Object[] aumentaUm(Object[] objetos) {
-		Object[] temp = new Object[objetos.length + 1];
+	public T[] aumentaUm(T[] objetos) {
+		//Como a instancia usada é de um Objeto qualquer não pode garantir o cast
+		@SuppressWarnings("unchecked")
+		T[] temp = (T[]) new Object[objetos.length + 1];
 		for (int i = 0; i < objetos.length; i++) {
 			temp[i] = objetos[i];
 		}
@@ -230,11 +221,11 @@ public class ArraiList
 	}
 
 	/**
-	 * Metódo para saber se um objeto se encontra no arrai
+	 * Metódo para saber se um objeto se encontra no array
 	 * @param objeto
 	 * @return
 	 */
-	public Boolean isContain(Object objeto) {
+	public Boolean isContain(T objeto) {
 		verificaNulo(objeto);
 		Boolean contem = false;
 		if(size() > 0) {
@@ -249,7 +240,7 @@ public class ArraiList
 
 	@Override
 	public String toString() {
-		return "ArraiList [objetos=" + Arrays.toString(objetos) + "]";
+		return "ArrayList [objetos=" + Arrays.toString(objetos) + "]";
 	}
 
 

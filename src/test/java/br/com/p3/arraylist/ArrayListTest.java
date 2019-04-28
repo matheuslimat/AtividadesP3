@@ -6,16 +6,16 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class ArraiListTest {
+class ArrayListTest {
 
-	ArraiList arrai;
+	ArrayList<String> arrai;
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {}
 
 	@BeforeEach
 	void init() {
-		arrai = new ArraiList();
+		arrai = new ArrayList<String>();
 	}
 
 	@AfterEach
@@ -26,10 +26,9 @@ class ArraiListTest {
 	@SuppressWarnings("unused")
 	@Test
 	void testArraiList() {
-		//Iniciando arrailist n vezes
 		int cont = 0;
 		for (int i = 0; i < 5; i++) {
-			ArraiList arrai = new ArraiList();
+			ArrayList<String> arrai = new ArrayList<String>();
 			cont = i;
 		}
 		Assertions.assertTrue(cont == 4);
@@ -37,13 +36,12 @@ class ArraiListTest {
 
 	@Test
 	void testIniciaArraiPassandoTamanho() {
-		ArraiList arrai = new ArraiList(42);
+		ArrayList<String> arrai = new ArrayList<String>(42);
 		Assertions.assertTrue(arrai.size() == 0);
 	}
 
 	@Test
 	void testAdicionandoValorNulo() {
-		ArraiList arrai = new ArraiList();
 		Assertions.assertThrows(NullPointerException.class, () -> {
 			arrai.add(null);
 		});
@@ -51,8 +49,6 @@ class ArraiListTest {
 
 	@Test
 	void testAdicionaElementos() {
-		ArraiList arrai = new ArraiList();
-
 		arrai.add("Iphone");
 		arrai.add("Xiaomi");
 		arrai.add("Nokia");
@@ -66,7 +62,6 @@ class ArraiListTest {
 
 	@Test
 	void testRemovendoNulo() {
-		ArraiList arrai = new ArraiList();
 		arrai.add("Iphone");
 
 		Assertions.assertThrows(NullPointerException.class, () -> {
@@ -77,7 +72,6 @@ class ArraiListTest {
 
 	@Test
 	void testRemovendoValorInexistente() {
-		ArraiList arrai = new ArraiList();
 		arrai.add("Iphone");
 
 		Assertions.assertThrows(NullPointerException.class, () -> {
@@ -88,7 +82,6 @@ class ArraiListTest {
 
 	@Test
 	void removendoIndiceInexistente() {
-		ArraiList arrai = new ArraiList();
 		arrai.add("Iphone");
 		Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
 			arrai.remove(2);
@@ -97,7 +90,6 @@ class ArraiListTest {
 
 	@Test
 	void pegaIndice() {
-		ArraiList arrai = new ArraiList();
 		arrai.add("ola");
 		Assertions.assertTrue(arrai.get(0).equals("ola"));
 		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
@@ -118,7 +110,6 @@ class ArraiListTest {
 
 	@Test
 	void testGetValorNegativo() {
-		ArraiList arrai = new ArraiList();
 		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
 			arrai.get(-1);
 		});
@@ -126,7 +117,6 @@ class ArraiListTest {
 
 	@Test
 	void testGetComArraiVazio() {
-		ArraiList arrai = new ArraiList();
 		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
 			arrai.get(0);
 		});
@@ -134,55 +124,45 @@ class ArraiListTest {
 
 	@Test
 	void verificaArraiVazioIniciadoComTamanhoPadrao() {
-		ArraiList arrai = new ArraiList();
 		Assertions.assertTrue(arrai.isEmpty());
 	}
 
 	@Test
 	void verificaArraiVazioIniciadoComTamanhoPassado() {
-		ArraiList arrai = new ArraiList(42);
 		Assertions.assertTrue(arrai.isEmpty());
 	}
 
 	@Test
 	void testCloneTamanho() {
-		//consertar fazer com q o metodo clone retorne o tipo ArraiList
-		ArraiList arrai = new ArraiList(42);
-		Object[] aux = arrai.clone();
-		Assertions.assertTrue(aux.length != arrai.size());
+
 	}
 
 	@Test
 	void testClear() {
-		ArraiList arrai = new ArraiList(42);
 		arrai.clear();
 		Assertions.assertTrue(arrai.isEmpty());
 	}
 
 	@Test
 	void testSizeComArraiVazio() {
-		ArraiList arrai = new ArraiList(5);
 		Assertions.assertTrue(arrai.size() == 0);
 
 	}
 
 	@Test
 	void testSizeComElementos() {
-		ArraiList arrai = new ArraiList(5);
 		arrai.add("jetta");
 		Assertions.assertTrue(arrai.size() == 1);
 	}
 
 	@Test
 	void testIndexOfObjetoNaoEncontrado() {
-		ArraiList arrai = new ArraiList(5);
 		Assertions.assertTrue(arrai.indexOf("Asus") == -1);
 
 	}
 
 	@Test
 	void testIndexOfValorNulo() {
-		ArraiList arrai = new ArraiList(5);
 		Assertions.assertThrows(NullPointerException.class, () -> {
 			arrai.indexOf(null);
 		});
@@ -190,19 +170,16 @@ class ArraiListTest {
 
 	@Test
 	void lastIndexOf() {
-		ArraiList arrai = new ArraiList(5);
 		Assertions.assertTrue(arrai.lastIndexOf("asus") == -1);
 	}
 
 	@Test
 	void isEmpty() {
-		ArraiList arrai = new ArraiList(5);
 		Assertions.assertTrue(arrai.isEmpty());
 	}
 
 	@Test
 	void isContain() {
-		ArraiList arrai = new ArraiList(5);
 		Assertions.assertFalse(arrai.isContain("A"));
 	}
 
