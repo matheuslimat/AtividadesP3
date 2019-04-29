@@ -1,19 +1,16 @@
 package br.com.p3.arraylist;
 
 import java.util.Arrays;
-import java.util.List;
-
-import br.com.p3.exceptions.TamanhoInvalidoException;
-import br.com.p3.exceptions.ValorNuloException;
+import java.util.Comparator;
 
 /**
  * Simula comportamento de um array
  * @author Matheus Lima Tavares da Costa
  */
-public class ArrayList<T>
-{
+public class ArrayList<T> implements Comparator<T>{
 	private T[] objetos;
 	private int posicao = 0;
+	private Boolean achou = false;
 	private static final int TAMANHOPADRAO = 12;
 
 	/**
@@ -27,7 +24,7 @@ public class ArrayList<T>
 	/**
 	 * Construtor do array com tamanho passado
 	 * @param Especifica o tamanho do array
-	 * @throws TamanhoInvalidoException é chamado toda vez que o tamanho passado for inválido
+	 * @throws IllegalArgumentException é chamado toda vez que o tamanho passado for inválido
 	 */
 	@SuppressWarnings("unchecked")
 	public ArrayList(int tamanho){
@@ -42,26 +39,47 @@ public class ArrayList<T>
 	/**
 	 * Função adciona objeto ao array
 	 * @param objeto Representa o objeto a ser adicionado na lista
-	 * @throws ValorNuloException é chamado toda vez que o objeto passado for nulo
+	 * @throws NullPointerException é chamado toda vez que o objeto passado for nulo
 	 */
-	public void add(T objeto){
+	public Boolean add(T objeto){
 		verificaNulo(objeto);
 		if(isEstourou()) {
 			duplicaTamanho();
 		}
 		this.objetos[posicao] = objeto;
 		posicao++;
+		return true;
+	}
+	
+	/**
+	 * 
+	 * @param objeto
+	 * @return
+	 * @throws NullPointerException é chamado toda vez que o objeto passado for nulo
+	 */
+	public Boolean addAll(ArrayList<T> objeto) {
+		if(objeto == null) {
+			throw new NullPointerException();
+		}
+		int tamanho = posicao + objeto.size();
+		int cont = 0;
+		for (int i = posicao; i < tamanho; i++) {
+			this.objetos[posicao] = objeto.get(cont);
+			posicao++;
+			cont++;
+		}
+		return true;
 	}
 
 	/**
 	 * Retorna elemento pelo indice
 	 * @param index representa a posição do elemento
 	 */
-	public Object get(int index){
-		if(index >= posicao || index < 0) {
+	public T get(int indice){
+		if(indice >= posicao || indice < 0) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
-		return objetos[index];
+		return objetos[indice];
 	}
 
 	/**
@@ -95,15 +113,25 @@ public class ArrayList<T>
 		}
 		return ultimaOcorrencia;
 	}
-
-	@SuppressWarnings("unused")
-	public void clear() {
-		if(posicao > 0) {
-			for (T object : objetos) {
-				object = null;
-			}
+	
+	/**
+	 * Substitui o elemento na posição especificada
+	 * @param indice
+	 * @param elemento
+	 */
+	public void set(int indice, T elemento) {
+		if(indice < 0 || indice >= posicao) {
+			throw new IndexOutOfBoundsException();
 		}
-		this.posicao = 0;
+		this.objetos[indice] = elemento;
+	}
+
+	//Como a instancia usada é de um Objeto qualquer não pode garantir o cast
+	@SuppressWarnings("unchecked")
+	public void clear() {
+		//atribuir uma nova instancia ou fazer um for atribuindo nulo?
+		this.objetos = (T[]) new Object[TAMANHOPADRAO];
+		posicao = 0;
 	}
 
 	/**
@@ -127,7 +155,6 @@ public class ArrayList<T>
 	 */
 	public void remove(T objeto) {
 		verificaNulo(objeto);
-		Boolean achou = false;
 		for (int i = 0; i < posicao; i++) {
 			if(objetos[i].equals(objeto)) {
 				objetos[i] = null;
@@ -137,22 +164,25 @@ public class ArrayList<T>
 				throw new NullPointerException();
 			}
 		}
-		posicao --;
+		posicao--;
 
 	}
 
 	/**
 	 * Metodo retorna uma copia da lista atual
 	 */
-	public T[] clone() {
+	public ArrayList<T> clone() {
 		//Como a instancia usada é de um Objeto qualquer não pode garantir o cast
-		@SuppressWarnings("unchecked")
-		T[] copia = (T[]) new Object[objetos.length];
-		for (int i = 0; i < objetos.length; i++) {
-			copia[i] = this.objetos[i];
+		ArrayList<T> copia = new ArrayList<>();
+		for (int i = 0; i < posicao; i++) {
+			copia.add(this.objetos[i]);
 		}
 		return copia;
 	}
+	
+//	public void sort(List<T> objeto){
+//		Collections.sort(objeto);
+//	}
 
 	/**
 	 * Esse metódo retorna o tamanho da lista de objetos
@@ -175,13 +205,13 @@ public class ArrayList<T>
 	 * @return Retorna se o tamanho da lista é zero
 	 */
 	private Boolean isEstourou() {
-		return this.objetos.length == posicao ? true : false;
+		return this.objetos.length == posicao;
 	}
 
 	/**
 	 * Retorna uma exceçao caso o objeto seja nulo
 	 * @param objeto Representa o objeto a ser verificado
-	 * @throws ValorNuloException 
+	 * @throws @throws NullPointerException é chamado toda vez que o objeto passado for nulo 
 	 */
 	public void verificaNulo(T objeto) {
 		if(objeto == null) {
@@ -243,5 +273,9 @@ public class ArrayList<T>
 		return "ArrayList [objetos=" + Arrays.toString(objetos) + "]";
 	}
 
+	@Override
+	public int compare(T o1, T o2) {
+		return 0;
+	}
 
 }

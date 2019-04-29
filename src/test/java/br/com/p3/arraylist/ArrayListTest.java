@@ -15,7 +15,7 @@ class ArrayListTest {
 
 	@BeforeEach
 	void init() {
-		arrai = new ArrayList<String>();
+		arrai = new ArrayList<>();
 	}
 
 	@AfterEach
@@ -27,8 +27,9 @@ class ArrayListTest {
 	@Test
 	void testArraiList() {
 		int cont = 0;
+		ArrayList<String> arrai;
 		for (int i = 0; i < 5; i++) {
-			ArrayList<String> arrai = new ArrayList<String>();
+			arrai = new ArrayList<>();
 			cont = i;
 		}
 		Assertions.assertTrue(cont == 4);
@@ -59,6 +60,29 @@ class ArrayListTest {
 
 		Assertions.assertTrue(arrai.size() == 3);
 	}
+	
+	@Test
+	void testAddTrue() {
+		Assertions.assertTrue(arrai.add("hello") == true);
+	}
+	
+	@Test
+	void testAddAll() {
+		arrai.add("dinheiro");
+		ArrayList<String> aux = new ArrayList<>();
+		aux.add("Jetta");
+		aux.add("Jeep");
+		
+		arrai.addAll(aux);
+		Assertions.assertTrue(arrai.size() == 3);
+	}
+	
+	@Test
+	void testAddAllObjetoNulo() {
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			arrai.addAll(null);
+		});
+	}
 
 	@Test
 	void testRemovendoNulo() {
@@ -67,7 +91,6 @@ class ArrayListTest {
 		Assertions.assertThrows(NullPointerException.class, () -> {
 			arrai.remove(null);
 		});
-
 	}
 
 	@Test
@@ -97,17 +120,6 @@ class ArrayListTest {
 		});
 	}
 
-	//	@Test
-	//	void adicionaElementoComIndice() {
-	//		ArraiList arrai = new ArraiList();
-	//		
-	//		arrai.add("Iphone");
-	//		arrai.add("Xiaomi");
-	//		arrai.add("Nokia");
-	//		
-	//		arrai.add(1, "teste");
-	//	}
-
 	@Test
 	void testGetValorNegativo() {
 		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
@@ -133,12 +145,14 @@ class ArrayListTest {
 	}
 
 	@Test
-	void testCloneTamanho() {
-
-	}
-
-	@Test
 	void testClear() {
+		arrai.clear();
+		Assertions.assertTrue(arrai.isEmpty());
+	}
+	
+	@Test
+	void testClearComElementos() {
+		arrai.add("Hello World");
 		arrai.clear();
 		Assertions.assertTrue(arrai.isEmpty());
 	}
@@ -181,12 +195,37 @@ class ArrayListTest {
 	@Test
 	void isContain() {
 		Assertions.assertFalse(arrai.isContain("A"));
+		arrai.add("b");
+		arrai.remove("b");
+		Assertions.assertFalse(arrai.isContain("b"));
 	}
 
 	@Test
 	void contain() {
 		arrai.add("A");
 		Assertions.assertTrue(arrai.isContain("A"));
+	}
+	
+	@Test
+	void setIndiceInvalido() {
+		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
+			arrai.set(-30, "teste set");
+		});
+	}
+	
+	@Test
+	void testSet() {
+		arrai.add("PHP");
+		arrai.set(0, "java");
+		Assertions.assertTrue(arrai.get(0).equals("java"));
+	}
+	
+	@Test
+	void testClone() {
+		arrai.add("hp");
+		arrai.add("asus");
+		ArrayList<String> aux = arrai.clone();
+		Assertions.assertTrue(aux.toString().equals(arrai.toString()));
 	}
 
 
