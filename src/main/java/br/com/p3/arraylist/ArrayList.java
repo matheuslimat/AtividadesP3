@@ -5,9 +5,10 @@ import java.util.Comparator;
 
 /**
  * Simula comportamento de um array
+ * 
  * @author Matheus Lima Tavares da Costa
  */
-public class ArrayList<T> implements Comparator<T>{
+public class ArrayList<T> implements Comparator<T> {
 	private T[] objetos;
 	private int posicao = 0;
 	private Boolean achou = false;
@@ -23,34 +24,65 @@ public class ArrayList<T> implements Comparator<T>{
 
 	/**
 	 * Construtor do array com tamanho passado
+	 * 
 	 * @param Especifica o tamanho do array
-	 * @throws IllegalArgumentException é chamado toda vez que o tamanho passado for inválido
+	 * @throws IllegalArgumentException é chamado toda vez que o tamanho passado for
+	 *                                  inválido
 	 */
 	@SuppressWarnings("unchecked")
-	public ArrayList(int tamanho){
-		if (tamanho < 1){
+	public ArrayList(int tamanho) {
+		if (tamanho < 1) {
 			throw new IllegalArgumentException();
-		}else{
-			//Como a instancia usada é de um Objeto qualquer não pode garantir o cast
+		} else {
+			// Como a instancia usada é de um Objeto qualquer não pode garantir o cast
 			this.objetos = (T[]) new Object[tamanho];
 		}
 	}
 
 	/**
 	 * Função adciona objeto ao array
+	 * 
 	 * @param objeto Representa o objeto a ser adicionado na lista
 	 * @throws NullPointerException é chamado toda vez que o objeto passado for nulo
 	 */
-	public Boolean add(T objeto){
+	public Boolean add(T objeto) {
 		verificaNulo(objeto);
-		if(isEstourou()) {
+		if (isEstourou()) {
 			duplicaTamanho();
 		}
 		this.objetos[posicao] = objeto;
 		posicao++;
 		return true;
 	}
-	
+
+	/**
+	 * Adiciona elemento no indice informado
+	 * @param indice
+	 * @param objeto
+	 */
+	public void add(int indice, T objeto) {
+		if(indice < 0 || indice > posicao) {
+			throw new IndexOutOfBoundsException();
+		}
+		aumentaUm();
+		for (int j = objetos.length - 1; j >= 0; j--) {
+			if (j > indice) {
+				this.objetos[j] = this.objetos[j-1];
+			}
+		}
+		this.objetos[indice] = objeto;
+	}
+
+	private void aumentaUm() {
+		// Como a instancia usada é de um Objeto qualquer não pode garantir o cast
+		@SuppressWarnings("unchecked")
+		T[] aux = (T[]) new Object[objetos.length + 1];
+		for (int i = 0; i < this.objetos.length; i++) {
+			aux[i] = this.objetos[i];
+		}
+		this.objetos = aux;
+	}
+
 	/**
 	 * 
 	 * @param objeto
@@ -58,7 +90,7 @@ public class ArrayList<T> implements Comparator<T>{
 	 * @throws NullPointerException é chamado toda vez que o objeto passado for nulo
 	 */
 	public Boolean addAll(ArrayList<T> objeto) {
-		if(objeto == null) {
+		if (objeto == null) {
 			throw new NullPointerException();
 		}
 		int tamanho = posicao + objeto.size();
@@ -73,10 +105,11 @@ public class ArrayList<T> implements Comparator<T>{
 
 	/**
 	 * Retorna elemento pelo indice
+	 * 
 	 * @param index representa a posição do elemento
 	 */
-	public T get(int indice){
-		if(indice >= posicao || indice < 0) {
+	public T get(int indice) {
+		if (indice >= posicao || indice < 0) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		return objetos[indice];
@@ -84,14 +117,16 @@ public class ArrayList<T> implements Comparator<T>{
 
 	/**
 	 * Procura pela primeira ocorrencia do objeto no array e retorna o indice dele
-	 * @param objeto 
-	 * @return retorna o indice do objeto no array se ele não for encontrado retorna -1
+	 * 
+	 * @param objeto
+	 * @return retorna o indice do objeto no array se ele não for encontrado retorna
+	 *         -1
 	 */
 	public int indexOf(T objeto) {
 		verificaNulo(objeto);
 		int contIndice = -1;
 		for (int i = 0; i < posicao; i++) {
-			if(objeto.equals(objetos[i])) {
+			if (objeto.equals(objetos[i])) {
 				contIndice = i;
 			}
 		}
@@ -100,46 +135,50 @@ public class ArrayList<T> implements Comparator<T>{
 
 	/**
 	 * Procura pelo ultimo indice do objeto passado
+	 * 
 	 * @param objeto
-	 * @return Retorna o ultimo indice da ocorrencia do objeto, se não tiver ocorrencia retorna -1
+	 * @return Retorna o ultimo indice da ocorrencia do objeto, se não tiver
+	 *         ocorrencia retorna -1
 	 */
 	public int lastIndexOf(T objeto) {
 		verificaNulo(objeto);
 		int ultimaOcorrencia = -1;
 		for (int i = 0; i < posicao; i++) {
-			if(objeto.equals(objetos[i])) {
+			if (objeto.equals(objetos[i])) {
 				ultimaOcorrencia = i;
 			}
 		}
 		return ultimaOcorrencia;
 	}
-	
+
 	/**
 	 * Substitui o elemento na posição especificada
+	 * 
 	 * @param indice
 	 * @param elemento
 	 */
 	public void set(int indice, T elemento) {
-		if(indice < 0 || indice >= posicao) {
+		if (indice < 0 || indice >= posicao) {
 			throw new IndexOutOfBoundsException();
 		}
 		this.objetos[indice] = elemento;
 	}
 
-	//Como a instancia usada é de um Objeto qualquer não pode garantir o cast
+	// Como a instancia usada é de um Objeto qualquer não pode garantir o cast
 	@SuppressWarnings("unchecked")
 	public void clear() {
-		//atribuir uma nova instancia ou fazer um for atribuindo nulo?
+		// atribuir uma nova instancia ou fazer um for atribuindo nulo?
 		this.objetos = (T[]) new Object[TAMANHOPADRAO];
 		posicao = 0;
 	}
 
 	/**
 	 * Remove objeto do array pelo indice
+	 * 
 	 * @param indice
 	 */
 	public void remove(int indice) {
-		if(indice > posicao) {
+		if (indice < 0 || indice > posicao) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		objetos[indice] = null;
@@ -151,16 +190,17 @@ public class ArrayList<T> implements Comparator<T>{
 
 	/**
 	 * Remove um objeto
+	 * 
 	 * @param object
 	 */
 	public void remove(T objeto) {
 		verificaNulo(objeto);
 		for (int i = 0; i < posicao; i++) {
-			if(objetos[i].equals(objeto)) {
+			if (objetos[i].equals(objeto)) {
 				objetos[i] = null;
 				achou = true;
 				break;
-			}else if(!achou) {
+			} else if (!achou) {
 				throw new NullPointerException();
 			}
 		}
@@ -172,20 +212,21 @@ public class ArrayList<T> implements Comparator<T>{
 	 * Metodo retorna uma copia da lista atual
 	 */
 	public ArrayList<T> clone() {
-		//Como a instancia usada é de um Objeto qualquer não pode garantir o cast
+		// Como a instancia usada é de um Objeto qualquer não pode garantir o cast
 		ArrayList<T> copia = new ArrayList<>();
 		for (int i = 0; i < posicao; i++) {
 			copia.add(this.objetos[i]);
 		}
 		return copia;
 	}
-	
-//	public void sort(List<T> objeto){
-//		Collections.sort(objeto);
-//	}
+
+	//	public void sort(List<T> objeto){
+	//		Collections.sort(objeto);
+	//	}
 
 	/**
 	 * Esse metódo retorna o tamanho da lista de objetos
+	 * 
 	 * @return
 	 */
 	public int size() {
@@ -194,6 +235,7 @@ public class ArrayList<T> implements Comparator<T>{
 
 	/**
 	 * Retorna se o array está vazio.
+	 * 
 	 * @return
 	 */
 	public boolean isEmpty() {
@@ -204,29 +246,32 @@ public class ArrayList<T> implements Comparator<T>{
 	 * 
 	 * @return Retorna se o tamanho da lista é zero
 	 */
-	private Boolean isEstourou() {
+	public boolean isEstourou() {
 		return this.objetos.length == posicao;
 	}
 
 	/**
 	 * Retorna uma exceçao caso o objeto seja nulo
+	 * 
 	 * @param objeto Representa o objeto a ser verificado
-	 * @throws @throws NullPointerException é chamado toda vez que o objeto passado for nulo 
+	 * @throws @throws NullPointerException é chamado toda vez que o objeto passado
+	 *         for nulo
 	 */
 	public void verificaNulo(T objeto) {
-		if(objeto == null) {
+		if (objeto == null) {
 			throw new NullPointerException();
 		}
 	}
 
 	/**
 	 * Caso o array não tenha mais espaço essa função duplica o tamanho
+	 * 
 	 * @param objetos
 	 * @return
 	 */
 	public void duplicaTamanho() {
 		int novoTamanho = objetos.length * 2;
-		//Como a instancia usada é de um Objeto qualquer não pode garantir o cast
+		// Como a instancia usada é de um Objeto qualquer não pode garantir o cast
 		@SuppressWarnings("unchecked")
 		T[] temp = (T[]) new Object[novoTamanho];
 		for (int i = 0; i < objetos.length; i++) {
@@ -236,31 +281,17 @@ public class ArrayList<T> implements Comparator<T>{
 	}
 
 	/**
-	 * Caso seja usado o add com indice
-	 * @param objetos
-	 * @return
-	 */
-	public T[] aumentaUm(T[] objetos) {
-		//Como a instancia usada é de um Objeto qualquer não pode garantir o cast
-		@SuppressWarnings("unchecked")
-		T[] temp = (T[]) new Object[objetos.length + 1];
-		for (int i = 0; i < objetos.length; i++) {
-			temp[i] = objetos[i];
-		}
-		return temp;
-	}
-
-	/**
 	 * Metódo para saber se um objeto se encontra no array
+	 * 
 	 * @param objeto
 	 * @return
 	 */
 	public Boolean isContain(T objeto) {
 		verificaNulo(objeto);
 		Boolean contem = false;
-		if(size() > 0) {
+		if (size() > 0) {
 			for (int i = 0; i < posicao; i++) {
-				if(objetos[i].equals(objeto)) {
+				if (objetos[i].equals(objeto)) {
 					contem = true;
 				}
 			}

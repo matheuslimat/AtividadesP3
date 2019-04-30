@@ -83,6 +83,22 @@ class ArrayListTest {
 			arrai.addAll(null);
 		});
 	}
+	
+	@Test
+	void testAddPeloIndice() {
+		arrai.add("P3");
+		arrai.add("P2");
+		arrai.add("P1");
+		arrai.add(1, "P4");
+		Assertions.assertEquals(arrai.get(1), "P4");
+	}
+	
+	@Test
+	void testeAddPeloIndiceInvalido() {
+		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
+			arrai.add(-1, "P5");
+		});
+	}
 
 	@Test
 	void testRemovendoNulo() {
@@ -108,6 +124,13 @@ class ArrayListTest {
 		arrai.add("Iphone");
 		Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
 			arrai.remove(2);
+		});
+	}
+	
+	@Test
+	void removendoIndiceMenorQueZero() {
+		Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+			arrai.remove(-1);
 		});
 	}
 
@@ -207,6 +230,13 @@ class ArrayListTest {
 	}
 	
 	@Test
+	void isContainValorNulo() {
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			arrai.isContain(null);
+		});
+	}
+	
+	@Test
 	void setIndiceInvalido() {
 		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
 			arrai.set(-30, "teste set");
@@ -226,6 +256,12 @@ class ArrayListTest {
 		arrai.add("asus");
 		ArrayList<String> aux = arrai.clone();
 		Assertions.assertTrue(aux.toString().equals(arrai.toString()));
+	}
+	
+	@Test
+	void isEstourou() {
+		//modificador de acesso mudado para public para efetuar testes
+		Assertions.assertFalse(arrai.isEstourou());
 	}
 
 
